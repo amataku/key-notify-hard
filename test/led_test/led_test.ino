@@ -5,8 +5,9 @@ const int ana_in = 0;
 //シリアルポート番号
 const int Serialnumber = 9800;
 //アナログ入力値のしきい値
-const int on_border = 1010;
-
+const int put_border = 1010;
+//乗っているかどうかの判定
+bool put_flag = false;
 
 void setup() {
   //アウトプットのピン設定
@@ -24,11 +25,16 @@ void loop() {
   //コンソールに出力
   Serial.println(press);
 
-  //アウトプットの設定
-  if(press < on_border){
+  //置かれたことの判定
+  if(put_flag==false && press < put_border){
     digitalWrite(led_out,HIGH);
-  }else{
-    digitalWrite(led_out,LOW);
+    put_flag = true;
   }
 
+  //取られたことの判定
+  if(put_flag && press >= put_border){
+    digitalWrite(led_out,LOW);
+    put_flag = false;
+  }
+  
 }
