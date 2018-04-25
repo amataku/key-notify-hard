@@ -2,11 +2,13 @@ import RPi.GPIO as GPIO
 import time
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18,GPIO.OUT)
+GPIO.setup(18,GPIO.IN)
 
-for x in xrange(5):
-	GPIO.output(18,True)
-	time.sleep(2)
-	GPIO.output(18,False)
-	time.sleep(2)
+while True:
+    now = GPIO.input(18)
+    if now == 0: 
+        state = 1
+    else:
+        state = 0
+    print "now input value is " + str(state)
 GPIO.cleanup()
