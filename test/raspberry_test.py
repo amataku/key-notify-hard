@@ -3,20 +3,28 @@ import time
 import urllib
 
 CHANNEL = 18
+DELAYTIME = 50000
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(CHANNEL,GPIO.IN)
 
 before = 3
+delay = 0
 
 while True:
     input = GPIO.input(CHANNEL)
-    if input != before:
+    if delay == 0:
+        if input != before:
+            delay = 1
+    if delay != 0:
+        if input == before:
+            delay = delay + 1
+    if delay == DELAYTIME:
         if input == 0:
             print "on!"
-            before = input
+            delay = 0
         else:
             print "off!"
-            before = input
-
+            delay = 0
+    before = input
 GPIO.cleanup()
