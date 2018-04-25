@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 import time
-import urllib
+import requests
 
 CHANNEL = 18
 DELAYTIME = 50000
@@ -21,9 +21,13 @@ while True:
             delay = delay + 1
     if delay == DELAYTIME:
         if input == 0:
+            url = "https://key-notify-server.herokuapp.com/api/hard/on"
+            requests.post(url,data={})
             print "on!"
             delay = 0
         else:
+            url = "https://key-notify-server.herokuapp.com/api/hard/off"
+            requests.post(url,data={})
             print "off!"
             delay = 0
     before = input
