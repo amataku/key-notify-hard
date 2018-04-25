@@ -1,14 +1,18 @@
 import RPi.GPIO as GPIO
 import time
+import urllib
+
+CHANNEL = 18
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(18,GPIO.IN)
+GPIO.setup(CHANNEL,GPIO.IN)
+
+before = 3
 
 while True:
-    now = GPIO.input(18)
-    if now == 0: 
-        state = 1
-    else:
-        state = 0
-    print "now input value is " + str(state)
+    input = GPIO.input(CHANNEL)
+    if input != before:
+        print "cahnge"
+        before = input
+
 GPIO.cleanup()
