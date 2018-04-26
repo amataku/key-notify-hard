@@ -18,16 +18,17 @@ while True:
     input_1 = GPIO.input(CHANNEL_1)
     input_2 = GPIO.input(CHANNEL_2)
     print str(input_2)
+    print str(input_1)
     if delay == 0:
-        if input_2 != before_2:
+        if input_2 != before_2 or input_1 != before_1:
             delay = 1
     if delay != 0:
-        if input_2 == before_2:
+        if input_2 == before_2 or input_1 == before_1:
             delay = delay + 1
     else:
         delay = 0
     if delay == DELAYTIME:
-        if input_1 == 0 or input_2 == 0:
+        if input_2 == 0 or input_1 == 0:
             url = "https://key-notify-server.herokuapp.com/api/hard/on"
             requests.post(url,data={})
             print "on!"
@@ -37,6 +38,6 @@ while True:
             requests.post(url,data={})
             print "off!"
             delay = 0
-    before_1 = input_2
+    before_1 = input_1
     before_2 = input_2
 GPIO.cleanup()
