@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import requests
+import json
 
 CHANNEL_1 = 18
 CHANNEL_2 = 17
@@ -9,6 +10,11 @@ DELAYTIME = 50
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(CHANNEL_1,GPIO.IN)
 GPIO.setup(CHANNEL_2,GPIO.IN)
+
+APP_ID = os.environ["KEY_NOTIFY"]
+
+payload = {'app_id': APP_ID}
+headrs = {'content-type': 'application/json'}
 
 before_1 = 3
 before_2 = 3
@@ -30,12 +36,12 @@ while True:
     if delay == DELAYTIME:
         if input_2 == 0 or input_1 == 0:
             url = "https://key-notify-server.herokuapp.com/api/hard/on"
-            requests.post(url,data={})
+            requests.post(url,data=json.dumps(payload),headrs=headrs)
             print "on!"
             delay = 0
         else:
             url = "https://key-notify-server.herokuapp.com/api/hard/off"
-            requests.post(url,data={})
+            requests.post(url,data=json.dumps(payload),headrs=headrs)
             print "off!"
             delay = 0
     before_1 = input_1
