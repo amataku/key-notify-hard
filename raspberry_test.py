@@ -35,14 +35,20 @@ while True:
     if delay == DELAYTIME:
         if input_2 == 0 or input_1 == 0:
             url = "https://key-notify-server.herokuapp.com/api/hard/on"
-            requests.post(url,data=json.dumps(payload),headers=headers)
-            print "on!"
-            delay = 0
+            try:
+                requests.post(url,data=json.dumps(payload),headers=headers)
+            except:
+                print("connect error")
+            finally:
+                delay = 0
         else:
             url = "https://key-notify-server.herokuapp.com/api/hard/off"
-            requests.post(url,data=json.dumps(payload),headers=headers)
-            print "off!"
-            delay = 0
+            try:
+                requests.post(url,data=json.dumps(payload),headers=headers)
+            except:
+                print("connet error")
+            finally:
+                delay = 0
     before_1 = input_1
     before_2 = input_2
 GPIO.cleanup()
