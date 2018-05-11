@@ -12,6 +12,8 @@ setproctitle("key_notify")
 CHANNEL_1 = 18
 CHANNEL_2 = 17
 DELAYTIME = 3
+SLEEPTIME = 2.0
+URL='https://key-notify-server.herokuapp.com/api/hard'
 
 # set pin input
 GPIO.setmode(GPIO.BCM)
@@ -32,7 +34,7 @@ delay = 0
 
 while True:
     # wait time
-    time.sleep(2.0)
+    time.sleep(SLEEPTIME)
 
     # set input state
     input_1 = GPIO.input(CHANNEL_1)
@@ -53,7 +55,7 @@ while True:
     if delay == DELAYTIME:
         # send on request
         if input_2 == 0 or input_1 == 0:
-            url = "https://key-notify-server.herokuapp.com/api/hard/on"
+            url = URL+'/on'
             try:
                 requests.post(url,data=json.dumps(payload),headers=headers)
             except:
@@ -62,7 +64,7 @@ while True:
                 delay = 0
         # send off request
         else:
-            url = "https://key-notify-server.herokuapp.com/api/hard/off"
+            url = URL+'/off'
             try:
                 requests.post(url,data=json.dumps(payload),headers=headers)
             except:
