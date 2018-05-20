@@ -40,19 +40,17 @@ while True:
     input_1 = GPIO.input(CHANNEL_1)
     input_2 = GPIO.input(CHANNEL_2)
 
-    # sensing input state change
+    # sensing input state change and sensing input state keep
     if delay == 0:
         if input_2 != before_2 or input_1 != before_1:
             delay = 1
-
-    # sensing input state keep
-    if delay != 0:
+    else:
         if input_2 == before_2 or input_1 == before_1:
             delay = delay + 1
-    else:
-        delay = 0
+        else:
+            delay = 0
 
-    if delay == DELAYTIME:
+    if delay >= DELAYTIME:
         # send on request
         if input_2 == 0 or input_1 == 0:
             url = URL+'/on'
