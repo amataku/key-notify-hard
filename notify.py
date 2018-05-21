@@ -45,7 +45,7 @@ while True:
         if input_2 != before_2 or input_1 != before_1:
             delay = 1
     else:
-        if input_2 == before_2 or input_1 == before_1:
+        if input_2 == before_2 and input_1 == before_1:
             delay = delay + 1
         else:
             delay = 0
