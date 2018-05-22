@@ -66,7 +66,7 @@ while True:
             try:
                 requests.post(url,data=json.dumps(payload),headers=headers)
             except:
-                print("connet error")
+                print("connect error")
             finally:
                 delay = 0
     # set next before value
