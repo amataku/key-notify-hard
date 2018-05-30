@@ -4,6 +4,8 @@ import requests
 import json
 import os
 from setproctitle import  setproctitle
+from requests.packages.urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 # change process name
 setproctitle("key_notify")
@@ -14,6 +16,17 @@ CHANNEL_2 = 17
 DELAYTIME = 3
 SLEEPTIME = 2.0
 URL='https://key-notify-server.herokuapp.com/api/hard'
+RETRY_CODE = [ 400, 404 ]
+RETRY_NUMBER = 3
+FACTOR = 1
+TIMEOUT = 5
+
+# connect retry seeting
+session = requests.Session()
+retries = Retry(total = RETRY_NUMBER,backoff_factor = FACTOR,status_forcelist = RETRY_CODE)
+session.mount('https://',HTTPAdapter(max_retries=retries))
+session.mount('http://',HTTPAdapter(max_retries=retries))
+
 
 # set pin input
 GPIO.setmode(GPIO.BCM)
@@ -58,7 +71,7 @@ while True:
             if send != nowsend:
                 url = URL+'/on'
                 try:
-                    requests.post(url,data=json.dumps(payload),headers=headers)
+                    session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
                     print("connect error")
                 finally:
@@ -70,7 +83,7 @@ while True:
             if send != nowsend:
                 url = URL+'/off'
                 try:
-                    requests.post(url,data=json.dumps(payload),headers=headers)
+                    session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
                     print("connect error")
                 finally:
