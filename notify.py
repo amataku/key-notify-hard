@@ -16,16 +16,16 @@ CHANNEL_2 = 17
 DELAYTIME = 3
 SLEEPTIME = 2.0
 URL='https://key-notify-server.herokuapp.com/api/hard'
-RETRY_CODE = [ 400,404 ]
-RETRY_NUMBER = 2
+RETRY_CODE = [ 400, 404 ]
+RETRY_NUMBER = 3
 FACTOR = 1
 TIMEOUT = 5
 
 # connect retry seeting
-s = requests.Session()
-retries = Retry(total=RETRY_NUMBER,backoff_factor=FACTOR,status_forcelist=RETRY_CODE)
-s.mount('https://',HTTPAdapter(max_retries=retries))
-s.mount('http://',HTTPAdapter(max_retries=retries))
+session = requests.Session()
+retries = Retry(total = RETRY_NUMBER,backoff_factor = FACTOR,status_forcelist = RETRY_CODE)
+session.mount('https://',HTTPAdapter(max_retries=retries))
+session.mount('http://',HTTPAdapter(max_retries=retries))
 
 
 # set pin input
@@ -71,7 +71,7 @@ while True:
             if send != nowsend:
                 url = URL+'/on'
                 try:
-                    s.post(url,data=json.dumps(payload),timeout=TIMEOUT,headers=headers)
+                    session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
                     print("connect error")
                 finally:
@@ -83,7 +83,7 @@ while True:
             if send != nowsend:
                 url = URL+'/off'
                 try:
-                    s.post(url,data=json.dumps(payload),timeout=TIMEOUT,headers=headers)
+                    session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
                     print("connect error")
                 finally:
