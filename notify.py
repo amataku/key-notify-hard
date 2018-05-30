@@ -30,6 +30,7 @@ headers = {'content-type': 'application/json'}
 # set init
 before_1 = 3
 before_2 = 3
+send = 3
 delay = 0
 
 while True:
@@ -53,22 +54,28 @@ while True:
     if delay >= DELAYTIME:
         # send on request
         if input_2 == 0 or input_1 == 0:
-            url = URL+'/on'
-            try:
-                requests.post(url,data=json.dumps(payload),headers=headers)
-            except:
-                print("connect error")
-            finally:
-                delay = 0
+            nowsend = 0
+            if send != nowsend:
+                url = URL+'/on'
+                try:
+                    requests.post(url,data=json.dumps(payload),headers=headers)
+                except:
+                    print("connect error")
+                finally:
+                    delay = 0
+                    send = 0
         # send off request
         else:
-            url = URL+'/off'
-            try:
-                requests.post(url,data=json.dumps(payload),headers=headers)
-            except:
-                print("connect error")
-            finally:
-                delay = 0
+            nowsend = 1
+            if send != nowsend:
+                url = URL+'/off'
+                try:
+                    requests.post(url,data=json.dumps(payload),headers=headers)
+                except:
+                    print("connect error")
+                finally:
+                    delay = 0
+                    send = 1
     # set next before value
     before_1 = input_1
     before_2 = input_2
