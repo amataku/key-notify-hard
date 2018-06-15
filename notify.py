@@ -17,9 +17,9 @@ DELAYTIME = 3
 SLEEPTIME = 2.0
 URL='https://key-notify-server.herokuapp.com/api/hard'
 RETRY_CODE = [ 400, 404 ]
-RETRY_NUMBER = 3
+RETRY_NUMBER = 1
 FACTOR = 1
-TIMEOUT = 5
+TIMEOUT = 60
 
 # connect retry seeting
 session = requests.Session()
