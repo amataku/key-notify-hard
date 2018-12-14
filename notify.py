@@ -56,7 +56,9 @@ while True:
     # set input state
     input_1 = GPIO.input(CHANNEL_1)
     input_2 = GPIO.input(CHANNEL_2)
-    plate_state = int(bool(input_1) or bool(input_2))
+    # if input_1 or input_2 is 0(ON) then state is 0(ON)
+    # if input_1 and input_2 is 1(OFF) then state is 1(OFF)
+    plate_state = int(bool(input_1) and bool(input_2))
 
     # sensing input state change and sensing input state keep
     if delay == 0:
