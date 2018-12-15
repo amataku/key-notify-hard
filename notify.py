@@ -20,6 +20,10 @@ RETRY_CODE = [ 400, 404 ]
 RETRY_NUMBER = 1
 FACTOR = 1
 TIMEOUT = 60
+STATE = {
+    "ON": 0,
+    "OFF": 1
+}
 
 # connect retry seeting
 session = requests.Session()
@@ -41,8 +45,7 @@ payload = {'app_id': APP_ID}
 headers = {'content-type': 'application/json'}
 
 # set init
-before_1 = 3
-before_2 = 3
+before_plate_state = 3
 send = 3
 delay = 0
 
@@ -53,21 +56,24 @@ while True:
     # set input state
     input_1 = GPIO.input(CHANNEL_1)
     input_2 = GPIO.input(CHANNEL_2)
+    # if input_1 or input_2 is 0(ON) then state is 0(ON)
+    # if input_1 and input_2 is 1(OFF) then state is 1(OFF)
+    plate_state = int(bool(input_1) and bool(input_2))
 
     # sensing input state change and sensing input state keep
     if delay == 0:
-        if input_2 != before_2 or input_1 != before_1:
+        if plate_state != before_plate_state:
             delay = 1
     else:
-        if input_2 == before_2 and input_1 == before_1:
+        if plate_state == before_plate_state:
             delay = delay + 1
         else:
             delay = 0
 
     if delay >= DELAYTIME:
         # send on request
-        if input_2 == 0 or input_1 == 0:
-            nowsend = 0
+        if plate_state == STATE["ON"]:
+            nowsend = STATE["ON"]
             if send != nowsend:
                 url = URL+'/on'
                 try:
@@ -76,10 +82,10 @@ while True:
                     print("connect error")
                 finally:
                     delay = 0
-                    send = 0
+                    send = STATE["ON"]
         # send off request
         else:
-            nowsend = 1
+            nowsend = STATE["OFF"]
             if send != nowsend:
                 url = URL+'/off'
                 try:
@@ -88,10 +94,9 @@ while True:
                     print("connect error")
                 finally:
                     delay = 0
-                    send = 1
+                    send = STATE["OFF"]
     # set next before value
-    before_1 = input_1
-    before_2 = input_2
+    before_plate_state = plate_state
 
 # pin input clean
 GPIO.cleanup()
