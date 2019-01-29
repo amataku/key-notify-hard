@@ -55,7 +55,7 @@ class Logger:
             self.logger.critical(msg)
 
 #set logger
-log  = logger.logger('key_notify hard')
+log  = Logger('key_notify hard')
 
 # connect retry seeting
 session = requests.Session()
@@ -113,8 +113,9 @@ while True:
                     req = session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
                     log.error("connection error")
-                finally:
+                else:
                     log.debug(req.status_code)
+                finally:
                     GPIO.output(OUTPUT_CHANNEL, True)
                     delay = 0
                     send = STATE["ON"]
@@ -127,8 +128,9 @@ while True:
                     req =　session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
                     log.error("connection error")
-                finally:
+                else:
                     log.debug(req.status_code)
+                finally:
                     GPIO.output(OUTPUT_CHANNEL, False)
                     delay = 0
                     send = STATE["OFF"]
