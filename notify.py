@@ -39,20 +39,20 @@ class Logger:
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
-        def debug(self, msg):
-            self.logger.debug(msg)
+    def debug(self, msg):
+        self.logger.debug(msg)
 
-        def info(self, msg):
-            self.logger.info(msg)
+    def info(self, msg):
+        self.logger.info(msg)
 
-        def warn(self, msg):
-            self.logger.warning(msg)
+    def warn(self, msg):
+        self.logger.warning(msg)
 
-        def error(self, msg):
-            self.logger.eeror(msg)
+    def error(self, msg):
+        self.logger.eeror(msg)
 
-        def critical(self, msg):
-            self.logger.critical(msg)
+    def critical(self, msg):
+        self.logger.critical(msg)
 
 #set logger
 log  = Logger('key_notify hard')
