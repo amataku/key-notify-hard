@@ -6,6 +6,7 @@ import os
 from setproctitle import  setproctitle
 from requests.packages.urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+from logging import Formatter, handlers, getLogger, DEBUG
 
 # change process name
 setproctitle("key_notify")
@@ -13,6 +14,7 @@ setproctitle("key_notify")
 # set constant var
 CHANNEL_1 = 18
 CHANNEL_2 = 17
+OUTPUT_CHANNEL = 24
 DELAYTIME = 3
 SLEEPTIME = 2.0
 URL='https://key-notify-server.herokuapp.com/api/hard'
@@ -25,6 +27,36 @@ STATE = {
     "OFF": 1
 }
 
+class Logger:
+    def __init__(self, name = __name__):
+        self.logger = getLogger(name)
+        self.logger.setLevel(DEBUG)
+        formatter = Formatter("[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s")
+
+        #file output
+        handler = handlers.RotatingFileHandler(filename = 'log.log', maxBytes = 1048576, backupCount = 3)
+        handler.setLevel(DEBUG)
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
+
+    def debug(self, msg):
+        self.logger.debug(msg)
+
+    def info(self, msg):
+        self.logger.info(msg)
+
+    def warn(self, msg):
+        self.logger.warning(msg)
+
+    def error(self, msg):
+        self.logger.eeror(msg)
+
+    def critical(self, msg):
+        self.logger.critical(msg)
+
+#set logger
+log  = Logger('key_notify hard')
+
 # connect retry seeting
 session = requests.Session()
 retries = Retry(total = RETRY_NUMBER,backoff_factor = FACTOR,status_forcelist = RETRY_CODE)
@@ -32,10 +64,11 @@ session.mount('https://',HTTPAdapter(max_retries=retries))
 session.mount('http://',HTTPAdapter(max_retries=retries))
 
 
-# set pin input
+# set pin input,output
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(CHANNEL_1,GPIO.IN)
 GPIO.setup(CHANNEL_2,GPIO.IN)
+GPIO.setup(OUTPUT_CHANNEL, GPIO.OUT)
 
 # get enviroment var
 APP_ID = os.environ["KEY_NOTIFY"]
@@ -77,10 +110,13 @@ while True:
             if send != nowsend:
                 url = URL+'/on'
                 try:
-                    session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
+                    req = session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
-                    print("connect error")
+                    log.error("connection error")
+                else:
+                    log.debug(req.status_code)
                 finally:
+                    GPIO.output(OUTPUT_CHANNEL, True)
                     delay = 0
                     send = STATE["ON"]
         # send off request
@@ -89,10 +125,13 @@ while True:
             if send != nowsend:
                 url = URL+'/off'
                 try:
-                    session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
+                    req =　session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
-                    print("connect error")
+                    log.error("connection error")
+                else:
+                    log.debug(req.status_code)
                 finally:
+                    GPIO.output(OUTPUT_CHANNEL, False)
                     delay = 0
                     send = STATE["OFF"]
     # set next before value
