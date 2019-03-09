@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import RPi.GPIO as GPIO
 import time
 import requests
@@ -125,7 +126,7 @@ while True:
             if send != nowsend:
                 url = URL+'/off'
                 try:
-                    req =　session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
+                    req = session.post(url,data = json.dumps(payload),timeout = TIMEOUT,headers = headers)
                 except:
                     log.error("connection error")
                 else:
